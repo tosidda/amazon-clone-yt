@@ -2,18 +2,39 @@ import { StarIcon } from "@heroicons/react/solid"
 import Image from "next/image"
 import { useState } from "react"
 import Currency from "react-currency-formatter"
+import { useDispatch } from "react-redux";
+import {addToBasket} from "../slices/basketSlice"
 
 const MAX_RATING = 5;
 const MIN_RATING = 1;
 
 function Product(props) {
-    const { id, title, price, description, category, image } = props.product
+    const dispatch = useDispatch();
+
+    const { id, title, price, description, category, image, } = props.product
     
-    const [ratings] = useState(
+    const [rating] = useState(
         Math.floor(Math.random() * (MAX_RATING - MIN_RATING + 1)) + MIN_RATING
     )
 
     const [hasPrime] = useState(Math.random() < 0.5)
+
+    const addItemToBasket = () => {
+        console.log("add to iotem")
+        const product = {
+            id, 
+            title, 
+            price, 
+            description, 
+            category, 
+            image,
+            hasPrime,
+            rating
+        }
+        dispatch(addToBasket(product))
+    }
+
+
 
     return (
         <div className="relative flex flex-col m-5 bg-white z-30 p-10">
@@ -21,7 +42,7 @@ function Product(props) {
             <Image src={image} height={200} width={200} objectFit="contain"/>
             <h4 className="my-3">{title}</h4>
             <div className="flex">
-                {Array(ratings).fill().map((_, r) => (
+                {Array(rating).fill().map((_, r) => (
                     <StarIcon key={r} className="h-5 text-yellow-500"></StarIcon>
                 ))}
             </div>
@@ -39,7 +60,7 @@ function Product(props) {
                 </div>
             )}
 
-            <button className="mt-auto button">Add To Bakset</button>
+            <button onClick={addItemToBasket}className="mt-auto button">Add To Bakset</button>
         </div>
     )
 }
